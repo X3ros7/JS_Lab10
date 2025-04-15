@@ -1,0 +1,29 @@
+<div class="stats-wrapper">
+    <mat-card class="stat-card total">
+        <mat-card-title>Усього</mat-card-title>
+        <mat-card-content>
+            <h2>{{ total$ | async }}</h2>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card todo">
+        <mat-card-title>До роботи</mat-card-title>
+        <mat-card-content>
+            <h2>{{ countTodo$ | async }}</h2>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card in-progress">
+        <mat-card-title>В процесі</mat-card-title>
+        <mat-card-content>
+            <h2>{{ countInProgress$ | async }}</h2>
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card done">
+        <mat-card-title>Виконано</mat-card-title>
+        <mat-card-content>
+            <h2>{{ countDone$ | async }}</h2>
+        </mat-card-content>
+    </mat-card>
+</div>

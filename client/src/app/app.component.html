@@ -1,0 +1,35 @@
+<mat-sidenav-container class="app-container">
+    <mat-sidenav mode="side" opened class="app-sidenav">
+        <mat-list>
+            <mat-list-item>
+                <mat-icon matListItemIcon>list</mat-icon>
+                <a
+                    matListItemTitle
+                    [routerLink]="[
+                        { outlets: { primary: ['tasks'], aside: ['stats'] } }
+                    ]"
+                    routerLinkActive="active"
+                >
+                    <span>Список завдань</span>
+                </a>
+            </mat-list-item>
+        </mat-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="app-sidenav-content">
+        <div class="app-content">
+            @if (isTasksRoute$ | async) {
+            <aside class="app-aside">
+                <router-outlet name="aside"></router-outlet>
+            </aside>
+            <main class="app-main">
+                <router-outlet></router-outlet>
+            </main>
+            } @else {
+            <main class="app-main">
+                <router-outlet></router-outlet>
+            </main>
+            }
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

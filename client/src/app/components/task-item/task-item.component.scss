@@ -1,0 +1,59 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    flex-grow: 1;
+}
+.item-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 40px;
+    background-color: #f8f9fa;
+    overflow-y: auto;
+}
+.item-card {
+    background: #ffffff;
+    padding: 32px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.task-header {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+.task-field {
+    margin-bottom: 16px;
+    .label {
+        font-weight: 500;
+        color: #666;
+        display: block;
+        margin-bottom: 4px;
+    }
+    .value {
+        font-size: 16px;
+        color: #222;
+    }
+    mat-chip.chip-todo {
+        background-color: #f44336;
+        color: white;
+    }
+    mat-chip.chip-in_progress {
+        background-color: #ff9800;
+        color: white;
+    }
+    mat-chip.chip-done {
+        background-color: #4caf50;
+        color: white;
+    }
+}
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 32px;
+}

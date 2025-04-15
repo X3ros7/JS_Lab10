@@ -1,0 +1,83 @@
+<form [formGroup]="taskForm" class="task-form">
+    <mat-form-field appearance="outline">
+        <mat-label>Назва</mat-label>
+        <input matInput type="text" id="title" formControlName="title" />
+        <mat-error
+            *ngIf="
+                taskForm.get('title')?.hasError('required') &&
+                taskForm.get('title')?.dirty
+            "
+        >
+            Поле "Назва" обов'язкове для заповнення
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Опис</mat-label>
+        <input
+            matInput
+            type="text"
+            id="description"
+            formControlName="description"
+        />
+        <mat-error
+            *ngIf="taskForm.get('description')?.hasError('forbiddenWord')"
+        >
+            Вводити слова React та Vue заборонено
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Дата дедлайну</mat-label>
+        <input matInput type="date" id="dueDate" formControlName="dueDate" />
+        <mat-error
+            *ngIf="
+                taskForm.get('dueDate')?.hasError('required') &&
+                taskForm.get('dueDate')?.dirty
+            "
+        >
+            Поле "Дата дедлайну" обов'язкове для заповнення
+        </mat-error>
+        <mat-error *ngIf="taskForm.get('dueDate')?.hasError('dateVal')">
+            Рік не може бути меншим за поточний
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Виконавець</mat-label>
+        <input matInput type="text" id="assignee" formControlName="assignee" />
+        <mat-error
+            *ngIf="
+                taskForm.get('assignee')?.hasError('required') &&
+                taskForm.get('assignee')?.dirty
+            "
+        >
+            Поле "Виконавець" обов'язкове для заповнення
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Статус</mat-label>
+        <mat-select id="status" formControlName="status">
+            <mat-option [value]="TaskStatus.TODO">До роботи</mat-option>
+            <mat-option [value]="TaskStatus.IN_PROGRESS">В процесі</mat-option>
+            <mat-option [value]="TaskStatus.DONE">Виконано</mat-option>
+        </mat-select>
+        <mat-error
+            *ngIf="
+                taskForm.get('status')?.hasError('required') &&
+                taskForm.get('status')?.dirty
+            "
+        >
+            Поле "Статус" обов'язкове для заповнення
+        </mat-error>
+    </mat-form-field>
+    <div class="form-actions">
+        <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!taskForm.valid"
+            (click)="onSubmit()"
+        >
+            {{ editMode ? "Оновити завдання" : "Додати нове завдання" }}
+        </button>
+        <button mat-button mat-dialog-close>Скасувати</button>
+    </div>
+</form>

@@ -1,0 +1,55 @@
+@if (task$ | async; as task) {
+<section class="item-wrapper">
+    <div class="item-card">
+        <div class="task-header">{{ task.title }}</div>
+        <div class="task-field">
+            <span class="label">Виконавець:</span>
+            <span class="value">{{ task.assignee }}</span>
+        </div>
+        @if (task.description) {
+        <div class="task-field">
+            <span class="label">Опис:</span>
+            <span class="value">{{ task.description }}</span>
+        </div>
+        }
+        <div class="task-field">
+            <span class="label">Дедлайн:</span>
+            <span class="value">{{ task.dueDate }}</span>
+        </div>
+        <div class="task-field">
+            <span class="label">Статус:</span>
+            <mat-chip [ngClass]="getStatusClass(task.status)">
+                {{ task.status | taskStatus }}
+            </mat-chip>
+        </div>
+        <div class="task-field">
+            <mat-form-field appearance="fill" class="status-select">
+                <mat-label>Статус</mat-label>
+                <mat-select
+                    [value]="task.status"
+                    (selectionChange)="updateStatus(task.id, $event)"
+                >
+                    <mat-option [value]="TaskStatus.TODO">До роботи</mat-option>
+                    <mat-option [value]="TaskStatus.IN_PROGRESS"
+                        >В процесі</mat-option
+                    >
+                    <mat-option [value]="TaskStatus.DONE">Виконано</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="actions">
+        <button
+            mat-stroked-button
+            color="primary"
+            [routerLink]="[
+                '/',
+                { outlets: { primary: ['tasks'], aside: ['stats'] } }
+            ]"
+        >
+            <mat-icon>arrow_back</mat-icon>
+            Назад
+        </button>
+    </div>
+</section>
+}
