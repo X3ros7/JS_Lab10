@@ -120,10 +120,13 @@ export const taskReducer = createReducer(
     selectedTaskId: id,
   })),
 
-  on(setFilterStatus, (state, { status }) => ({
-    ...state,
-    filterStatus: status,
-  })),
+  on(setFilterStatus, (state, { status = "" }) => {
+    console.log(`Status: ${status}`);
+    return {
+      ...state,
+      filterStatus: status,
+    };
+  }),
 
   on(clearTaskError, (state) => ({
     ...state,

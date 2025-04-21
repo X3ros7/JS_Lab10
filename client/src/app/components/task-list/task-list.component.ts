@@ -92,21 +92,32 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
     this.error$ = this.store.select(selectTaskError);
     this.totalTasks$ = this.store.select(selectTaskTotal);
 
+    this.tasks$.pipe(takeUntil(this.destroy$)).subscribe((tasks) => {
+      this.dataSource.data = tasks;
+    });
+
     this.statusControl.valueChanges
-      .pipe(startWith(""), debounceTime(300), distinctUntilChanged())
+      .pipe(
+        startWith(""),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((status) => {
         this.paginator.firstPage();
+        this.loadTasks(1, 5, this.filterControl.value ?? "", status ?? "");
+      });
 
-        this.statusControl.valueChanges.subscribe(() =>
-          this.paginator.firstPage()
-        );
-
-        this.store
-          .select(selectAllTasks)
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((tasks) => {
-            this.dataSource.data = tasks;
-          });
+    this.filterControl.valueChanges
+      .pipe(
+        startWith(""),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((filter) => {
+        this.paginator.firstPage();
+        this.loadTasks(1, 5, filter ?? "", this.statusControl.value ?? "");
       });
 
     this.error$.pipe(takeUntil(this.destroy$)).subscribe((error) => {
@@ -122,30 +133,15 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     this.paginator.page
-      .pipe(
-        startWith({ pageIndex: 0, pageSize: 5 }),
-        switchMap(({ pageIndex, pageSize }) =>
-          combineLatest([
-            this.filterControl.valueChanges.pipe(
-              startWith(this.filterControl.value)
-            ),
-            this.statusControl.valueChanges.pipe(
-              startWith(this.statusControl.value)
-            ),
-          ]).pipe(
-            takeUntil(this.destroy$),
-            tap(([filter, status]) =>
-              this.loadTasks(
-                pageIndex + 1,
-                pageSize,
-                filter ?? "",
-                status ?? ""
-              )
-            )
-          )
-        )
-      )
-      .subscribe();
+      .pipe(startWith({ pageIndex: 0, pageSize: 5 }), takeUntil(this.destroy$))
+      .subscribe(({ pageIndex, pageSize }) => {
+        this.loadTasks(
+          pageIndex + 1,
+          pageSize,
+          this.filterControl.value ?? "",
+          this.statusControl.value ?? ""
+        );
+      });
   }
 
   ngOnDestroy(): void {
@@ -179,16 +175,24 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   onSelected(event: MatSelectChange): void {
-    this.store.dispatch(setFilterStatus({ status: event.value }));
+    console.log(event.value);
+    this.store.dispatch(setFilterStatus({ status: event.value as TaskStatus }));
   }
 
   private loadTasks(
     page: number,
     pageSize: number,
-    filter = "",
-    status = ""
+    filter: string = "",
+    status: string = ""
   ): void {
-    this.store.dispatch(loadTasks({ page, pageSize, filter, status }));
+    this.store.dispatch(
+      loadTasks({
+        page,
+        pageSize,
+        filter,
+        status,
+      })
+    );
   }
 
   deleteTask(id: string): void {
@@ -204,7 +208,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         goToPage,
         this.paginator.pageSize,
         this.filterControl.value ?? "",
-        this.statusControl.value ?? ""
+        this.statusControl.value as TaskStatus | ""
       );
     });
   }
@@ -218,7 +222,7 @@ export class TaskListComponent implements OnInit, AfterViewInit, OnDestroy {
         lastPage,
         this.paginator.pageSize,
         this.filterControl.value ?? "",
-        this.statusControl.value ?? ""
+        this.statusControl.value as TaskStatus | ""
       );
     });
   }

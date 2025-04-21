@@ -89,7 +89,7 @@ export const selectTask = createAction(
 
 export const setFilterStatus = createAction(
   "[Task] Set Filter Status",
-  props<{ status: string }>()
+  props<{ status: TaskStatus }>()
 );
 
 export const clearTaskError = createAction("[Task] Clear Error");
